@@ -21,7 +21,7 @@ import SimpleITK as sitk
 import vtk
 from PyQt5 import QtCore, QtWidgets
 
-from util.mainWindow import MainWindow, App
+from util.mainWindow import App
 
 # STEPS:
 # Select input and output folders

@@ -11,19 +11,26 @@
 # System Imports
 import os
 
+# Local Imports
+from .sitk_vtk import sitk2vtk, vtk2sitk
+
+# SimnpleITK Imports
+import SimpleITK as sitk
+
 # VTK Imports
 import vtk
 from vtk.qt.QVTKRenderWindowInteractor import QVTKRenderWindowInteractor
 
 # Qt5 Imports
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import (QMainWindow, QTextEdit, 
-     QAction, QFileDialog, QApplication, qApp, QDesktopWidget)
+from PyQt5.QtWidgets import (QMainWindow, QTextEdit, QHBoxLayout, QFrame,
+     QSplitter, QStyleFactory ,QAction, QFileDialog, QApplication, qApp, QDesktopWidget)
 from PyQt5.QtGui import QIcon
+from PyQt5.QtCore import Qt
 
 # Window Icon Image
-iconPath = os.path.join(os.path.join(os.getcwd(), "util"), "img")
-iconPath = os.path.join(iconPath, "hand_logo.png")
+iconPath = os.path.join(os.path.join(os.getcwd(), 'util'), 'img')
+iconPath = os.path.join(iconPath, 'hand_logo.png')
 
 #-----------------------------------------------#
 # Main window class to display dynamic CT images
@@ -39,7 +46,7 @@ class App(QMainWindow):
         self.vtkWidget = QVTKRenderWindowInteractor(self.frame)
         self.vl.addWidget(self.vtkWidget)
 
-        self.title = "DYNACT Image Viewer"
+        self.title = 'DYNACT Image Viewer'
         self.left = 100
         self.top = 100
         self.width = 1280
@@ -54,10 +61,7 @@ class App(QMainWindow):
         self.setGeometry(self.left, self.top, self.width, self.height)
         self.centreWindow()
         self.setWindowIcon(QIcon(iconPath))
-
-        self.textEdit = QTextEdit()
-        self.setCentralWidget(self.textEdit)
-
+        
 
         #-----------------------------------------------#
         # Initialize the menu bar
@@ -86,24 +90,12 @@ class App(QMainWindow):
         self.ren = vtk.vtkRenderer()
         self.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
- 
-        # Create source
-        source = vtk.vtkSphereSource()
-        source.SetCenter(0, 0, 0)
-        source.SetRadius(5.0)
- 
-        # Create a mapper
-        mapper = vtk.vtkPolyDataMapper()
-        mapper.SetInputConnection(source.GetOutputPort())
- 
-        # Create an actor
-        actor = vtk.vtkActor()
-        actor.SetMapper(mapper)
- 
-        self.ren.AddActor(actor)
+
+        # Create a mapper and actor (only allow one volume at a time)
+        self.mapper = vtk.vtkPolyDataMapper()
+        self.actor = vtk.vtkActor()
  
         self.ren.ResetCamera()
- 
         self.frame.setLayout(self.vl)
         self.setCentralWidget(self.frame)
 
@@ -130,10 +122,28 @@ class App(QMainWindow):
     # Shows a dialog box to select input files
     #-----------------------------------------------#
     def showDialog(self):
-        fname = QFileDialog.getOpenFileName(self, 'Open file', os.getcwd())
+        imageFileFilter = "Images (*.vtk *.stl)"
+        filePath = QFileDialog.getOpenFileName(self, 'Open file', os.getcwd(), imageFileFilter)
 
-        if fname[0]:
-            f = open(fname[0], 'r')
-            with f:
-                data = f.read()
-                self.textEdit.setText(data)
+        # Make sure the user selected a valid file
+        if filePath[0]:
+            if os.path.isfile(filePath[0]):
+                imageReader = vtk.vtkPolyDataReader()
+                imageReader.SetFileName(filePath[0])
+                imageReader.Update()
+
+                # Create a mapper
+                self.mapper.SetInputConnection(imageReader.GetOutputPort())
+        
+                # Create an actor
+                self.actor.SetMapper(self.mapper)
+        
+                self.ren.AddActor(self.actor)
+        
+                self.ren.ResetCamera()
+                self.frame.setLayout(self.vl)
+                self.setCentralWidget(self.frame)
+
+                # Reset the rendered volume
+                self.vtkWidget.GetRenderWindow().Render()
+                
