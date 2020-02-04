@@ -13,6 +13,7 @@ import os
 
 # Local Imports
 from .sitk_vtk import sitk2vtk, vtk2sitk
+from .vtkInteractor import MyInteractorStyle
 
 # SimnpleITK Imports
 import SimpleITK as sitk
@@ -90,10 +91,18 @@ class App(QMainWindow):
         self.ren = vtk.vtkRenderer()
         self.vtkWidget.GetRenderWindow().AddRenderer(self.ren)
         self.iren = self.vtkWidget.GetRenderWindow().GetInteractor()
+        
+        # Custom interactor
+        self.irenStyle = MyInteractorStyle()
+        self.iren.SetInteractorStyle(self.irenStyle)
+
+        pointPicker = vtk.vtkPointPicker()
 
         # Create a mapper and actor (only allow one volume at a time)
         self.mapper = vtk.vtkPolyDataMapper()
         self.actor = vtk.vtkActor()
+
+        self.iren.SetPicker(pointPicker)
  
         self.ren.ResetCamera()
         self.frame.setLayout(self.vl)
