@@ -98,7 +98,7 @@ int checkStatus(String str) {
   }
       
   else {
-    return 0; // 0 designates that a custom speed & angle has been enter
+    return 0; // 0 designates that a custom speed & angle has been entered
   }    
     
 }
@@ -141,12 +141,12 @@ void rotate(int speed, int angle) { // Rotate servo at specified speed and to sp
   int value = 0;
   
   while (value != 4) { // if value == 4 then reset has been pressed
-
+    
     Servo1.setSpeed(speed);
     Servo1.easeTo(angle);
     Servo1.easeTo(0);
 
     value = checkStatus(read()); // update value to see if reset button has been pressed
-    
   }
+  
 }

@@ -61,7 +61,7 @@ void setup(){
     .setFont(font3)
     .setColorBackground(0xFFFFFFFF)
     .setColorValue(0x000000)
-    .setFocus(false)
+    .setFocus(true)
     ;
   
   cp5.addTextlabel("label") // label for speedInput Textfield
@@ -226,7 +226,7 @@ void Clear() {
 
 void Enter() {
   hideWarnings(); // hide warnings (refresh after another button has been pressed)
-  cp5.get(Textfield.class, "speedInput").setFocus(true);
+  
   cp5.get(Textfield.class, "angleInput").setFocus(false);
   
   port.clear();
@@ -247,7 +247,7 @@ void Enter() {
     if (inputSpeed.matches("[0-9]+")) { // check if input contains digits only
       //println("numbers only");
       intSpeed = Integer.parseInt(inputSpeed);
-      outputSpeed = nf(intSpeed, 3);
+      outputSpeed = nf(intSpeed, 3); // make into 3 digit number
     }
     
     else {
@@ -265,10 +265,17 @@ void Enter() {
     if (inputAngle.matches("[0-9]+")) { // check if input contains digits only
       //println("numbers only");
       intAngle = Integer.parseInt(inputAngle);
-      outputAngle = nf(intAngle, 3);
+      outputAngle = nf(intAngle, 3); // make into 3 digit number
       
-      println("outputSpeed: " + outputSpeed + " outputAngle: " + outputAngle);
-      port.write(outputSpeed + outputAngle);
+      if (intAngle <= 180) {
+        println("outputSpeed: " + outputSpeed + " outputAngle: " + outputAngle);
+      
+        port.write(outputSpeed + outputAngle);
+      }
+      else { // inputAngle is over 180 (servo cannot move >180 deg)
+        cp5.get(Textlabel.class, "angleWarning").setVisible(true);
+      }
+
     }
     
     else {
