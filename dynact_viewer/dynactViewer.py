@@ -22,7 +22,6 @@ import vtk
 from PyQt5 import QtCore, QtWidgets
 
 from util.mainWindow import App
-# from util.glob import test
 
 # STEPS:
 # Select input and output folders
@@ -33,12 +32,6 @@ from util.mainWindow import App
  
  
 if __name__ == '__main__':
-    # init()
-    
-    # print(test)
-    # test = "two"
-    # print(test)
-
     app = QtWidgets.QApplication(sys.argv)
  
     window = App()
