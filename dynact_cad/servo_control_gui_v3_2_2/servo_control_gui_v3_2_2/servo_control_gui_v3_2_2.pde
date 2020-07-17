@@ -37,7 +37,7 @@ void setup(){
   
   printArray(Serial.list()); //prints all available serial ports
   
-  port = new Serial(this,  Serial.list()[1], 9600); // Open the port that the Arduino board is connected to (in this case #1)
+  port = new Serial(this,  Serial.list()[0], 9600); // Open the port that the Arduino board is connected to (in this case #1)
                                                     // Make sure to open the port at the same speed the Arduino is using (9600 bps)
   
   cp5 = new ControlP5(this);
@@ -58,14 +58,14 @@ void setup(){
   
   cp5.addTextlabel("label") // label for speedInput Textfield
     .setText("SPEED")
-    .setPosition(130, 88)
+    .setPosition(110, 88)
     .setFont(font2)
     .setColorValue(0x000000)
     ;
   
   cp5.addTextlabel("label2") // label for angleInput Textfield
     .setText("ANGLE")
-    .setPosition(130, 138)
+    .setPosition(110, 138)
     .setFont(font2)
     .setColorValue(0x000000)
     ;
