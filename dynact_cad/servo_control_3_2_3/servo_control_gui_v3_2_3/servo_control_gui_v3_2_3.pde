@@ -1,22 +1,18 @@
 /* SERVO CONTROL GUI V3.2.2
- * 2020-02-18   Written by Kendra Wang to power a servo motor continuously 
- *              and control the angle to which it moves and the speed at which it moves at.
- *
- * TO RUN: 
- *  - Upload the corresponding Arduino sketch (servoeasing_gui_v3_2_2.ino) first, and then run this sketch
- * KEYBOARD SHORTCUTS:
- *  - Reset: CTRL 
- *  - Enter: ENTER / RETURN
- *  - Switch from speed to angle textfield: TAB
- *  - Clear: SHIFT
+ * PURPOSE: To control constant servomotor motion (speed and angle) 
+ * TO RUN: Upload the corresponding Arduino sketch (servoeasing_gui_v3_2_2.ino) first, and then run this sketch
+ * GUI SHORTCUTS:
+ *    Reset: CTRL 
+ *    Enter: ENTER / RETURN
+ *    Switch from speed to angle textfield: TAB
  * GUI INSTRUCTIONS:
- *  - To acutuate or 'turn on' the servo motor, begin by either entering a desired speed and angle into the respective text fields
+ *    To acutuate or 'turn on' the servo motor, begin by either entering a desired speed and angle into the respective text fields
  *       OR press one of the preprogrammed speed buttons and press the 'Enter' button
- *  - The 'Reset' button stops the servo motor at the end of its cycle and resets the entire GUI to its default setting
- *  - Once actuated, the servomotor will rotate continously until the Reset button is pressed
- *  - The user must press the Reset button before switching speed/angle settings
+ *    The 'Reset' button stops the servo motor at the end of its cycle and resets the entire GUI to its default setting
+ *    Once actuated, the servomotor will rotate continously until the Reset button is pressed
+ *    The user must press the Reset button before switching speed/angle settings
  * NOTES:
- *  - Printing to the serial monitor from Arduino while the Processing sketch is running can cause serial miscommunication
+ *    Printing to the serial monitor from Arduino while the Processing sketch is running can cause serial miscommunication
  */
 
 
@@ -29,36 +25,32 @@ ControlP5 cp5; //create ControlP5 object
 PFont font, font2, font3;
 String inputSpeed = "";
 String inputAngle = "";
-String inputPos = "";
 String val;
 int intSpeed = 0;
 int intAngle = 0;
 String outputSpeed = "";
 String outputAngle = "";
-String outputPos = "";
 
 void setup(){
   
-  size (500,350); // window size, (width, height)
+  size (500,350); //window size, (width, height)
   
-  printArray(Serial.list()); // prints all available serial ports
+  printArray(Serial.list()); //prints all available serial ports
   
-  port = new Serial(this,  Serial.list()[2], 9600); // Open the port that the Arduino board is connected to (in this case #1)
+  port = new Serial(this,  Serial.list()[0], 9600); // Open the port that the Arduino board is connected to (in this case #1)
                                                     // Make sure to open the port at the same speed the Arduino is using (9600 bps)
   
   cp5 = new ControlP5(this);
-  font = createFont("Avenir-Book", 20); // custom fonts for buttons and title
+  font = createFont("DINCondensed-Bold", 26); // custom fonts for buttons and title
   font2 = createFont("DINCondensed-Bold", 16, true); // custom fonts for buttons and title
-  font3 = createFont("Avenir-Book", 12, true); // custom fonts for buttons and title
-  
-  //print(PFont.list());
+  font3 = createFont("STIXGeneral-Regular", 20, true); // custom fonts for buttons and title
 
   // Create controllers
   
   cp5.addTextfield("speedInput") // create Textfield for entering speed
-    .setPosition(125, 80) // x and y coords of upper left corner of button
+    .setPosition(180, 80) // x and y coords of upper left corner of button
     .setSize(100, 30) // size of Textfield
-    .setFont(font3)
+    .setFont(font2)
     .setColorBackground(0xFFFFFFFF)
     .setColorValue(0x000000)
     .setFocus(true)
@@ -66,62 +58,56 @@ void setup(){
   
   cp5.addTextlabel("label") // label for speedInput Textfield
     .setText("SPEED")
-    .setPosition(175, 88)
-    .setFont(font3)
+    .setPosition(110, 88)
+    .setFont(font2)
     .setColorValue(0x000000)
     ;
   
-  cp5.addTextfield("angleInput") // create Textfield for entering angle
-    .setPosition(125, 130) // x and y coords of upper left corner of button
+  cp5.addTextlabel("label2") // label for angleInput Textfield
+    .setText("ANGLE")
+    .setPosition(110, 138)
+    .setFont(font2)
+    .setColorValue(0x000000)
+    ;
+    
+   cp5.addTextfield("angleInput") // create Textfield for entering angle
+    .setPosition(180, 130) // x and y coords of upper left corner of button
     .setSize(100, 30) // size of Textfield
-    .setFont(font3)
+    .setFont(font2)
     .setColorBackground(0xFFFFFFFF)
     .setColorValue(0x000000)
     .setFocus(false)
     ;
   
-  cp5.addTextlabel("label2") // label for angleInput Textfield
-    .setText("ANGLE")
-    .setPosition(175, 138)
-    .setFont(font3)
-    .setColorValue(0x000000)
+  cp5.addButton("Enter") // create Enter button
+    .setPosition(300, 80) // x and y coords of upper left corner of button
+    .setSize(70, 30)
+    .setFont(font2)
     ;
-     
+    
+    
   cp5.addButton("Speed1") // create Speed1 button
     .setPosition(50, 190) // x and y coords of upper left corner of button
     .setSize(130, 40)
-    .setFont(font3)
+    .setFont(font2)
     ;
     
   cp5.addButton("Speed2") // create Speed2 button
     .setPosition(190, 190) // x and y coords of upper left corner of button
     .setSize(130, 40)
-    .setFont(font3)
+    .setFont(font2)
     ;
     
   cp5.addButton("Speed3") // create Speed3 button
     .setPosition(330, 190) // x and y coords of upper left corner of button
     .setSize(130, 40)
-    .setFont(font3)
-    ;
-  
-  cp5.addButton("Enter") // create Enter button
-    .setPosition(240, 80) // x and y coords of upper left corner of button
-    .setSize(150, 30)
-    .setFont(font3)
-    .setColorBackground(0xff00ace6)
-    ;
-  
-  cp5.addButton("Clear") // create Clear button
-    .setPosition(320, 130) // x and y coords of upper left corner of button
-    .setSize(70, 30)
-    .setFont(font3)
+    .setFont(font2)
     ;
   
   cp5.addButton("Reset") // create Reset button
-    .setPosition(240, 130) // x and y coords of upper left corner of button
+    .setPosition(300, 130) // x and y coords of upper left corner of button
     .setSize(70, 30)
-    .setFont(font3)
+    .setFont(font2)
     ;
     
   cp5.addTextlabel("speedWarning") // create label for handling unwanted speed inputs
@@ -147,13 +133,11 @@ void setup(){
 
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
 void draw(){
   background (255, 255, 255); // background of window (r,g,b) or (0 to 255)
   fill(74, 74, 74); // text color (r,g,b)
   textFont(font);
-  text("SERVO CONTROL 3.2.3", 250, 50); //window title ("text", x coord, y xoord)
+  text("SERVO CONTROL 3.2.2", 250, 50); //window title ("text", x coord, y xoord)
   textAlign(CENTER);
   
   // For printing from the Arduino
@@ -165,9 +149,8 @@ void draw(){
   
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
-void Speed1() { // when the Speed1 button is pressed, this method is called
+void Speed1() { // when Speed1 button is pressed, this method is called
   hideWarnings(); // hide warnings (refresh after another button has been pressed)
   
   port.clear();
@@ -176,9 +159,7 @@ void Speed1() { // when the Speed1 button is pressed, this method is called
   
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-void Speed2() { // when the Speed2 button is pressed, this method is called
+void Speed2() { // when Speed2 button is pressed, this method is called
   hideWarnings(); // hide warnings (refresh after another button has been pressed)
   
   port.clear();
@@ -186,9 +167,7 @@ void Speed2() { // when the Speed2 button is pressed, this method is called
   //println("speed2 pressed");
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-void Speed3() { // when the Speed3 button is pressed, this method is called
+void Speed3() { // when Speed3 button is pressed, this method is called
   hideWarnings(); // hide warnings (refresh after another button has been pressed)
   
   port.clear();
@@ -196,22 +175,9 @@ void Speed3() { // when the Speed3 button is pressed, this method is called
   //println("speed3 pressed");
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 void Reset() {
   hideWarnings(); // hide warnings (refresh after another button has been pressed)
-  
-  port.clear();
-  
-  
-  port.write("000004"); // tell Arduino to reset
-  //println("Reset pressed");
-}
-
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
-
-void Clear() {
-  hideWarnings();
   
   port.clear();
   
@@ -220,13 +186,15 @@ void Clear() {
   
   cp5.get(Textfield.class, "speedInput").setFocus(true);
   cp5.get(Textfield.class, "angleInput").setFocus(false);
+  
+  port.write("000004"); // tell Arduino to reset
+  //println("Reset pressed");
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 void Enter() {
   hideWarnings(); // hide warnings (refresh after another button has been pressed)
-  
+  cp5.get(Textfield.class, "speedInput").setFocus(true);
   cp5.get(Textfield.class, "angleInput").setFocus(false);
   
   port.clear();
@@ -247,7 +215,7 @@ void Enter() {
     if (inputSpeed.matches("[0-9]+")) { // check if input contains digits only
       //println("numbers only");
       intSpeed = Integer.parseInt(inputSpeed);
-      outputSpeed = nf(intSpeed, 3); // make into 3 digit number
+      outputSpeed = nf(intSpeed, 3);
     }
     
     else {
@@ -265,17 +233,10 @@ void Enter() {
     if (inputAngle.matches("[0-9]+")) { // check if input contains digits only
       //println("numbers only");
       intAngle = Integer.parseInt(inputAngle);
-      outputAngle = nf(intAngle, 3); // make into 3 digit number
+      outputAngle = nf(intAngle, 3);
       
-      if (intAngle <= 180) {
-        println("outputSpeed: " + outputSpeed + " outputAngle: " + outputAngle);
-      
-        port.write(outputSpeed + outputAngle);
-      }
-      else { // inputAngle is over 180 (servo cannot move >180 deg)
-        cp5.get(Textlabel.class, "angleWarning").setVisible(true);
-      }
-
+      println("outputSpeed: " + outputSpeed + " outputAngle: " + outputAngle);
+      port.write(outputSpeed + outputAngle);
     }
     
     else {
@@ -289,19 +250,17 @@ void Enter() {
     cp5.get(Textlabel.class, "angleWarning").setVisible(true);
   }
   
+  cp5.get(Textfield.class, "speedInput").clear();
+  cp5.get(Textfield.class, "angleInput").clear();
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 void hideWarnings() {
-  
   cp5.get(Textlabel.class, "speedWarning").setVisible(false);
   cp5.get(Textlabel.class, "angleWarning").setVisible(false);
   cp5.get(Textlabel.class, "charWarning").setVisible(false);
-  
 }
 
-// ——————————————————————————————————————————————————————————————————————————————————————————————————————————————————————
 
 void keyPressed () {
   
@@ -315,9 +274,6 @@ void keyPressed () {
   if (keyCode == TAB) {
     cp5.get(Textfield.class, "speedInput").setFocus(false);
     cp5.get(Textfield.class, "angleInput").setFocus(true);
-  }
-  if (keyCode == SHIFT) {
-    Clear();
   }
   
 }
