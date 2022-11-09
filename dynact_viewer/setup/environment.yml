@@ -1,0 +1,9 @@
+name: dynact
+channels:
+  - conda-forge
+  - anaconda
+  - defaults
+dependencies:
+  - python=3.6
+  - vtk=8.2
+  - pyqt=5.12.3
