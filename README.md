@@ -1,7 +1,7 @@
 # DYNACT
 
-This repository contains code for the the manuscript: 
+This repository contains code for the the manuscript:
 
-**_Reproducibility and Repeatability of a Semi-Automated Pipeline to Quantify Trapeziometacarpal Joint Angles Using Dynamic Computed Tomography._** Michael T. Kuczynski, Kendra Wang, Justin J. Tse, Tomasz Bugajski, Sarah L. Manske. BMC Medical Imaging. Submitted May 2022.
+**Kuczynski, M.T., Wang, K., Tse, J.J., Bugajski, T., Manske, S.L.** Reproducibility and repeatability of a semi-automated pipeline to quantify trapeziometacarpal joint angles using dynamic computed tomography. BMC Medical Imaging. 22, 192 (2022). https://doi.org/10.1186/s12880-022-00922-2
 
-Scripts will be uploaded once the above manuscript is published.
+Scripts for computing joint angles and translations are in the `dynact_angles` folder. Scripts for the mesh viewer software used to select anatomical landmarks are in the `dynact_viewer` folder.
