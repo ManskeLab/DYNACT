@@ -16,64 +16,73 @@ import argparse
 
 from pydicom.errors import InvalidDicomError
 
-"""
-Print iterations progress.
 
-Parameters
-----------
-iteration : int
-    Current iteration
+def print_progress(iteration, total, prefix="", suffix="", decimals=1, bar_length=100):
+    """
+    Print iterations progress.
 
-total : int
-    Total iterations
+    Parameters
+    ----------
+    iteration : int
+        Current iteration
 
-prefix : string
-    Prefix string
+    total : int
+        Total iterations
 
-suffix : string
-    Suffix string
+    prefix : string
+        Prefix string
 
-decimals : int
-    Positive number of decimals in percent complete
+    suffix : string
+        Suffix string
 
-bar_length : int
-    Character length of bar
+    decimals : int
+        Positive number of decimals in percent complete
 
-Returns
--------
+    bar_length : int
+        Character length of bar
 
-"""
-def print_progress(iteration, total, prefix='', suffix='', decimals=1, bar_length=100):
+    Returns
+    -------
+
+    """
     str_format = "{0:." + str(decimals) + "f}"
     percents = str_format.format(100 * (iteration / float(total)))
     filled_length = int(round(bar_length * iteration / float(total)))
-    bar = '█' * filled_length + '-' * (bar_length - filled_length)
+    bar = "█" * filled_length + "-" * (bar_length - filled_length)
 
-    sys.stdout.write('\r%s |%s| %s%s %s' % (prefix, bar, percents, '%', suffix)),
+    sys.stdout.write("\r%s |%s| %s%s %s" % (prefix, bar, percents, "%", suffix)),
 
     if iteration == total:
-        sys.stdout.write('\n')
+        sys.stdout.write("\n")
     sys.stdout.flush()
 
 
-if __name__ == '__main__' :
+if __name__ == "__main__":
     # Parse input arguements
     parser = argparse.ArgumentParser()
-    parser.add_argument("input_path", type=str, help="The input DICOM directory (compressed files)")
+    parser.add_argument(
+        "input_path", type=str, help="The input DICOM directory (compressed files)"
+    )
     args = parser.parse_args()
 
     input_path = args.input_path
 
     # Check if the provided directory exists
     if not os.path.exists(input_path):
-        print ("Error: provided directory does not exist!")
+        print("Error: provided directory does not exist!")
         sys.exit(1)
 
     # Get the absolute path of the directory provided. Use os.path.join() to avoid slash direction issues between Mac, Linux, and Windows
     input_path_abs = os.path.abspath(input_path)
 
     # Get the number of files in a directory for the progress bar
-    l = len([name for name in os.listdir(input_path_abs) if os.path.isfile(os.path.join(input_path_abs, name))])
+    l = len(
+        [
+            name
+            for name in os.listdir(input_path_abs)
+            if os.path.isfile(os.path.join(input_path_abs, name))
+        ]
+    )
 
     # Counter for the progress bar
     i = 0
@@ -100,19 +109,23 @@ if __name__ == '__main__' :
             # Get the file's tag and parse out the series description
             # Series description is located at [0x0008, 0x103e]
             # Use the instance number located at [0x0020, 0x0013] to rename the images
-            series_description = str(dicom[0x0008, 0x103e].value).upper()
+            series_description = str(dicom[0x0008, 0x103E].value).upper()
             instance_number = dicom[0x0020, 0x0013].value
 
             # Make the instance number have the same number of digits for all images
-            instance_number_str = str(instance_number).rjust(4, '0')
-            
+            instance_number_str = str(instance_number).rjust(4, "0")
+
             series_file_path = os.path.join(input_path_abs, series_description)
             new_file_name = "IM_" + instance_number_str + ".dcm"
 
             # Uncompressed Implicit VR Little-endian = 1.2.840.10008.1.2
             # Uncompressed Explicit VR Little-endian = 1.2.840.10008.1.2.1
             # Uncompressed Explicit VR Big-endian = 1.2.840.10008.1.2.2
-            if not ((tsUID == "1.2.840.10008.1.2") or (tsUID == "1.2.840.10008.1.2.1") or (tsUID == "1.2.840.10008.1.2.2")):
+            if not (
+                (tsUID == "1.2.840.10008.1.2")
+                or (tsUID == "1.2.840.10008.1.2.1")
+                or (tsUID == "1.2.840.10008.1.2.2")
+            ):
                 dicom.decompress()
 
             # If the series description directory doesn't already exist, create one
@@ -125,10 +138,12 @@ if __name__ == '__main__' :
             try:
                 dicom.save_as(output_file_path)
             except OSError as e:
-                if e.errno != errno.ENOENT:     # No such file or directory error
-                    print ("ERROR: No such file or directory named " + output_file_path)
+                if e.errno != errno.ENOENT:  # No such file or directory error
+                    print("ERROR: No such file or directory named " + output_file_path)
                     raise
 
             # Update progress bar
-            print_progress(i + 1, l, prefix = 'Progress:', suffix = 'Complete', bar_length = 50)
+            print_progress(
+                i + 1, l, prefix="Progress:", suffix="Complete", bar_length=50
+            )
             i = i + 1

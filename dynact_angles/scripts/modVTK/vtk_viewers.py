@@ -8,34 +8,45 @@ Created on: Jan. 11, 2021
 import vtk
 import argparse
 
-"""
-Displays the MC1 and TRP bones with the points selected for SCS definition.
 
-Parameters
-----------
-mc1_mask : string
+def display(
+    mc1_mask,
+    trp_mask,
+    mc1_pnt1,
+    mc1_pnt2,
+    mc1_pnt3,
+    trp_pnt1,
+    trp_pnt2,
+    trp_pnt3,
+    trp_pnt4,
+):
+    """
+    Displays the MC1 and TRP bones with the points selected for SCS definition.
 
-trp_mask : string
+    Parameters
+    ----------
+    mc1_mask : string
 
-mc1_pnt1 : list
+    trp_mask : string
 
-mc1_pnt2 : list
+    mc1_pnt1 : list
 
-mc1_pnt3 : list
+    mc1_pnt2 : list
 
-trp_pnt1 : list
+    mc1_pnt3 : list
 
-trp_pnt2 : list
+    trp_pnt1 : list
 
-trp_pnt3 : list
+    trp_pnt2 : list
 
-trp_pnt4 : list
+    trp_pnt3 : list
 
-Returns
--------
+    trp_pnt4 : list
 
-"""
-def display(mc1_mask, trp_mask, mc1_pnt1, mc1_pnt2, mc1_pnt3, trp_pnt1, trp_pnt2, trp_pnt3, trp_pnt4):
+    Returns
+    -------
+
+    """
     # Display points
     reader_mc1 = vtk.vtkPolyDataReader()
     reader_mc1.SetFileName(mc1_mask)
@@ -142,45 +153,45 @@ def display(mc1_mask, trp_mask, mc1_pnt1, mc1_pnt2, mc1_pnt3, trp_pnt1, trp_pnt2
     renderer.AddActor(sphere2_trp_actor)
     renderer.AddActor(sphere3_trp_actor)
     renderer.AddActor(sphere4_trp_actor)
-    renderer.SetBackground(0,0,0)
+    renderer.SetBackground(0, 0, 0)
 
     # Render and interact
     render_window.Render()
     render_window_interactor.Start()
 
 
-"""
-Displays the MC1 and TRP bones with the SCS axes.
-
-Parameters
-----------
-mc1_mask : string
-
-trp_mask : string
-
-mc1_X : list
-
-mc1_Y : list
-
-mc1_Z : list
-
-trp_X : list
-
-trp_Y : list
-
-trp_Z : list
-
-m0 : list
-    MC1 origin
-
-t0 : list
-    TRP origin
-
-Returns
--------
-
-"""
 def display_axes(mc1_mask, trp_mask, mc1_X, mc1_Y, mc1_Z, trp_X, trp_Y, trp_Z, mO, tO):
+    """
+    Displays the MC1 and TRP bones with the SCS axes.
+
+    Parameters
+    ----------
+    mc1_mask : string
+
+    trp_mask : string
+
+    mc1_X : list
+
+    mc1_Y : list
+
+    mc1_Z : list
+
+    trp_X : list
+
+    trp_Y : list
+
+    trp_Z : list
+
+    m0 : list
+        MC1 origin
+
+    t0 : list
+        TRP origin
+
+    Returns
+    -------
+
+    """
     # Display points
     reader_mc1 = vtk.vtkPolyDataReader()
     reader_mc1.SetFileName(mc1_mask)
@@ -301,7 +312,7 @@ def display_axes(mc1_mask, trp_mask, mc1_X, mc1_Y, mc1_Z, trp_X, trp_Y, trp_Z, m
     renderer.AddActor(trp_axis2_actor)
     renderer.AddActor(trp_axis3_actor)
     renderer.AddActor(trp_origin_actor)
-    renderer.SetBackground(0,0,0)
+    renderer.SetBackground(0, 0, 0)
 
     # Render and interact
     render_window.Render()

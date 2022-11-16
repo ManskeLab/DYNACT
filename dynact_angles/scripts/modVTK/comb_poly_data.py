@@ -8,21 +8,22 @@ Created on: Jan. 11, 2021
 import vtk
 import argparse
 
-"""
-Combines two VTK PolyData files into one PolyData image. The combined PolyData
-is smoothed. 
 
-Parameters
-----------
-vtk_path1 : string
-
-vtk_path2 : string
-
-Returns
--------
-final_img : VTK.Image
-"""
 def comb_poly_data(vtk_path1, vtk_path2):
+    """
+    Combines two VTK PolyData files into one PolyData image. The combined PolyData
+    is smoothed.
+
+    Parameters
+    ----------
+    vtk_path1 : string
+
+    vtk_path2 : string
+
+    Returns
+    -------
+    final_img : VTK.Image
+    """
     image_reader1 = vtk.vtkPolyDataReader()
     image_reader1.SetFileName(vtk_path1)
     image_reader1.Update()
@@ -54,20 +55,20 @@ def comb_poly_data(vtk_path1, vtk_path2):
     return final_img
 
 
-"""
-Main function to combine PolyData files.
-
-Parameters
-----------
-input_vtk_path1 : string
-
-input_vtk_path2 : string
-
-Returns
--------
-polydata : VTK.PolyData
-"""
 def main(input_vtk_path1, input_vtk_path2):
+    """
+    Main function to combine PolyData files.
+
+    Parameters
+    ----------
+    input_vtk_path1 : string
+
+    input_vtk_path2 : string
+
+    Returns
+    -------
+    polydata : VTK.PolyData
+    """
     polydata = comb_poly_data(input_vtk_path1, input_vtk_path2)
     return polydata
 
@@ -75,9 +76,9 @@ def main(input_vtk_path1, input_vtk_path2):
 if __name__ == "__main__":
     # Parse input arguments
     parser = argparse.ArgumentParser()
-    parser.add_argument('vtk_path1', type=str)
-    parser.add_argument('vtk_path2', type=str)
-    parser.add_argument('output_path', type=str)
+    parser.add_argument("vtk_path1", type=str)
+    parser.add_argument("vtk_path2", type=str)
+    parser.add_argument("output_path", type=str)
     args = parser.parse_args()
 
     vtk_path1 = args.vtk_path1

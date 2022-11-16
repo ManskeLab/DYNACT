@@ -28,57 +28,106 @@ import argparse
 
 from resample import Resample
 
-"""
 
+def batch_resample(
+    input_path,
+    output_path,
+    new_spacing,
+    new_origin,
+    new_size,
+    new_direction,
+    interpolator,
+    output_data_type,
+):
+    """
 
-Parameters
-----------
-input_path : string
+    Parameters
+    ----------
+    input_path : string
 
-output_path : string
+    output_path : string
 
-new_spacing : list
+    new_spacing : list
 
-new_origin : list
+    new_origin : list
 
-new_size : list
+    new_size : list
 
-new_direction : list
-                    
-interpolator : string
-                    
-output_data_type : int
+    new_direction : list
 
-Returns
--------
+    interpolator : string
 
-"""
-def batch_resample(input_path, output_path, new_spacing, new_origin, new_size, 
-                    new_direction, interpolator, output_data_type):
+    output_data_type : int
+
+    Returns
+    -------
+
+    """
     try:
-        os.makedirs( os.path.join(input_path[0:-10], 'RESAMPLED') )
+        os.makedirs(os.path.join(input_path[0:-10], "RESAMPLED"))
     except FileExistsError:
         pass
 
-    for next_dir in os.listdir(input_path) :
-        output_path = os.path.join(os.path.join(input_path[0:-10], 'RESAMPLED'), next_dir + '_Resampled.nii')
+    for next_dir in os.listdir(input_path):
+        output_path = os.path.join(
+            os.path.join(input_path[0:-10], "RESAMPLED"), next_dir + "_Resampled.nii"
+        )
         next_dir = os.path.join(input_path, next_dir)
 
         if os.path.isdir(next_dir):
-            Resample(next_dir, output_path, new_spacing, new_origin, new_size, \
-                    new_direction, interpolator, output_data_type)
+            Resample(
+                next_dir,
+                output_path,
+                new_spacing,
+                new_origin,
+                new_size,
+                new_direction,
+                interpolator,
+                output_data_type,
+            )
 
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(description='Resample an image using SimpleITK')
-    parser.add_argument('input_path', help='The input image file path')
-    parser.add_argument('output_path', help='The output image file path')
-    parser.add_argument('new_spacing', nargs=3, type=float, help='The new voxel spacing')
-    parser.add_argument('-o', '--origin', dest='new_origin', type=float, nargs=3, help='The new image origin')
-    parser.add_argument('-s', '--size', dest='new_size', nargs=3, type=int, help='The new image size/dimensions')
-    parser.add_argument('-d', '--direction', dest='new_direction', type=int, nargs=9, help='The new image direction')
-    parser.add_argument('-i', '--interpolator', dest='interpolator', help='The interpolator to use')
-    parser.add_argument('-t', '--type', dest='output_data_type', type=int, help='The resampled image data type')
+    parser = argparse.ArgumentParser(description="Resample an image using SimpleITK")
+    parser.add_argument("input_path", help="The input image file path")
+    parser.add_argument("output_path", help="The output image file path")
+    parser.add_argument(
+        "new_spacing", nargs=3, type=float, help="The new voxel spacing"
+    )
+    parser.add_argument(
+        "-o",
+        "--origin",
+        dest="new_origin",
+        type=float,
+        nargs=3,
+        help="The new image origin",
+    )
+    parser.add_argument(
+        "-s",
+        "--size",
+        dest="new_size",
+        nargs=3,
+        type=int,
+        help="The new image size/dimensions",
+    )
+    parser.add_argument(
+        "-d",
+        "--direction",
+        dest="new_direction",
+        type=int,
+        nargs=9,
+        help="The new image direction",
+    )
+    parser.add_argument(
+        "-i", "--interpolator", dest="interpolator", help="The interpolator to use"
+    )
+    parser.add_argument(
+        "-t",
+        "--type",
+        dest="output_data_type",
+        type=int,
+        help="The resampled image data type",
+    )
     args = parser.parse_args()
 
     # Parse arguments
@@ -91,7 +140,13 @@ if __name__ == "__main__":
     interpolator = args.interpolator
     output_data_type = args.output_data_type
 
-    batch_resample(input_path, output_path, new_spacing, new_origin, new_size, \
-                    new_direction, interpolator, output_data_type)
-
-    
+    batch_resample(
+        input_path,
+        output_path,
+        new_spacing,
+        new_origin,
+        new_size,
+        new_direction,
+        interpolator,
+        output_data_type,
+    )
